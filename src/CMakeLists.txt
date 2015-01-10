@@ -30,7 +30,7 @@ add_definitions(-std=c99 -pedantic -DHAVE_CONFIG_H)
 include_directories(${OPENGL_INCLUDE_DIR})
 # TODO what if OpenGL library has nonstandard location?
 add_library(OpenVG SHARED ${libOpenVG_SOURCES})
-target_link_libraries(OpenVG ${OPENGL_LIBRARIES})
+target_link_libraries(OpenVG ${OPENGL_LIBRARIES} -lm)
 SET_TARGET_PROPERTIES( OpenVG PROPERTIES COMPILE_FLAGS -fPIC)
 
 install(TARGETS OpenVG DESTINATION lib)
