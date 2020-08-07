@@ -552,10 +552,7 @@ void shUpdateImageTexture(SHImage *i, VGContext *c)
   glBindTexture(GL_TEXTURE_2D, i->texture);
   glTexImage2D(GL_TEXTURE_2D, 0, i->fd.glintformat,
                i->texwidth, i->texheight, 0,
-               i->fd.glformat, 0x8367/*i->fd.gltype*/, i->data); /* FIXME determine why the format is so silly */
-/*   short center=(i->texwidth*i->texheight)*2+2*i->texwidth; 
-//   printf("shUpdateImageTexture: 0x%x 0x%x 0x%x\n",i->fd.glintformat,i->fd.glformat, i->fd.gltype);
-//   printf("shUpdateImageTexture: %d %d %d %d\n",i->data[center],i->data[center+1],i->data[center+2],i->data[center+3]); */
+               i->fd.glformat, i->fd.gltype, i->data);
 }
 
 /*----------------------------------------------------------
@@ -968,7 +965,11 @@ VG_API_CALL void vgSetPixels(VGint dx, VGint dy,
   /* Setup window image format descriptor */
   /* TODO: this actually depends on the target framebuffer type
      if we really want the copy to be optimized */
+#ifdef BIG_ENDIAN
   shSetupImageFormat(VG_sRGBA_8888, &winfd);
+#else
+  shSetupImageFormat(VG_sABGR_8888, &winfd);
+#endif
 
   /* OpenGL doesn't allow us to use random stride. We have to
      manually copy the image data and write from a copy with
@@ -1026,7 +1027,11 @@ VG_API_CALL void vgWritePixels(const void * data, VGint dataStride,
   /* Setup window image format descriptor */
   /* TODO: this actually depends on the target framebuffer type
      if we really want the copy to be optimized */
+#ifdef BIG_ENDIAN
   shSetupImageFormat(VG_sRGBA_8888, &winfd);
+#else
+  shSetupImageFormat(VG_sABGR_8888, &winfd);
+#endif
 
   /* OpenGL doesn't allow us to use random stride. We have to
      manually copy the image data and write from a copy with
@@ -1077,8 +1082,12 @@ VG_API_CALL void vgGetPixels(VGImage dst, VGint dx, VGint dy,
   /* Setup window image format descriptor */
   /* TODO: this actually depends on the target framebuffer type
      if we really want the copy to be optimized */
+#ifdef BIG_ENDIAN
   shSetupImageFormat(VG_sRGBA_8888, &winfd);
-  
+#else
+  shSetupImageFormat(VG_sABGR_8888, &winfd);
+#endif
+
   /* OpenGL doesn't allow us to read to random destination
      coordinates nor using random stride. We have to
      read first and then manually copy to the image data */
@@ -1138,7 +1147,11 @@ VG_API_CALL void vgReadPixels(void * data, VGint dataStride,
   /* Setup window image format descriptor */
   /* TODO: this actually depends on the target framebuffer type
      if we really want the copy to be optimized */
+#ifdef BIG_ENDIAN
   shSetupImageFormat(VG_sRGBA_8888, &winfd);
+#else
+  shSetupImageFormat(VG_sABGR_8888, &winfd);
+#endif
 
   /* OpenGL doesn't allow random data stride. We have to
      read first and then manually copy to the output buffer */
