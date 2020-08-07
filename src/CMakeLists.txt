@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+include (TestBigEndian)
 # TODO headers as dependencies
 # TODO shared/static switch CMake-style
 set(libOpenVG_SOURCES 
@@ -27,6 +28,13 @@ set(libOpenVG_HEADERS
     shContext.h
 )
 add_definitions(-std=c99 -pedantic -DHAVE_CONFIG_H)
+
+# Test endianness for pixel packing
+TEST_BIG_ENDIAN(BIG_ENDIAN)
+if(BIG_ENDIAN)
+  add_compile_definitions(BIG_ENDIAN)
+endif()
+
 include_directories(${OPENGL_INCLUDE_DIR})
 # TODO what if OpenGL library has nonstandard location?
 add_library(OpenVG SHARED ${libOpenVG_SOURCES})
