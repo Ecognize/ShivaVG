@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+set(OpenVG_FOUND True)
+include("${CMAKE_CURRENT_LIST_DIR}/OpenVGTargets.cmake")
